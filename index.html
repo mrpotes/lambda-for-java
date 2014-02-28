@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>&#x03BB;4Java8</title>
+
+		<meta name="author" content="James Phillpotts">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/night.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+    <style type="text/css">
+      .reveal pre {
+        font-size: 0.9em;
+      }
+      .reveal pre code {
+        max-height: 450px;
+      }
+      .reveal p {
+        margin-bottom: 20px;
+        line-height: 1.4em;
+      }
+    </style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+          <h1>&#x03BB;4J</h1>
+					<h3>Lambdas for Java Developers</h3>
+					<p>
+						<small>
+              <a href="http://garbage-collection.potes.org.uk/">James Phillpotts</a> /
+              <a href="http://twitter.com/misterpotes">@misterpotes</a>
+            </small>
+					</p>
+				</section>
+
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            ## Finally!
+
+            They're here. Java's caught up with the other big boys...
+
+
+            ## Scala
+
+            ```
+            val foo = (x: Int) => x * x
+            println(foo(10))
+            ```
+
+
+            ## C&#35;
+
+            ```
+            Func<int,int> foo = x => x*x;
+            Console.WriteLine(foo(7));
+            ```
+
+
+            ## PHP
+
+            ```
+            $func = function($z) { return $z * $z; };
+            echo $func(10);
+            ```
+
+
+            ## VisualBasic
+
+            ```
+            Dim foo = Function(x) x * x
+            Console.WriteLine(foo(10))
+            ```
+          </script>
+				</section>
+
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            ## So what is a Lambda Function, anyway?
+
+            <ul>
+            <li class="fragment">An interface with a single method that needs implementing</li>
+            <li class="fragment">Declared using the syntax: `([args]) -> [body]`</li>
+
+            Note:
+            * Ultimately, it's an anonymous function - so in Java, a method that's detached from any concrete class
+
+
+
+            ## Remember Anonymous Classes?
+
+            ```
+            button.addActionListener(new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                System.out.println("Button clicked!");
+              }
+            });
+            ```
+            Note:
+            * Everyone's familiar with these
+            * Swing uses them all over the place
+
+
+
+            ## Introducing Anonymous Functions
+
+            ```
+            button.addActionListener(e => System.out.println("Button clicked!"));
+            ```
+
+
+
+            ## The End
+
+            Questions?
+
+            OK, there's a bit more to it than that! <!-- .element: class="fragment" -->
+          </script>
+				</section>
+
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            ## Pre-Java 8, maybe you used Guava?
+            ```java
+            List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5);
+            Iterable<Integer> odds = Iterables.filter(ints, new Predicate<Integer>() {
+              public boolean apply(Integer i) {
+                return i % 2 == 1;
+              }
+            });
+            Iterable<String> strings = Iterables.transform(odds,
+              new Function<Integer, String>() {
+                public String apply(Integer i) {
+                  return String.valueOf(i);
+                }
+              }
+            );
+            ```
+
+
+
+            Obviously this can now be simplified:
+            ```java
+            List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5);
+            Iterable<Integer> odds = Iterables.filter(ints, new Predicate<Integer>() {
+              public boolean apply(Integer i) {
+                return i % 2 == 1;
+              }
+            });
+            Iterable<String> strings = Iterables.transform(odds,
+              new Function<Integer, String>() {
+                public String apply(Integer i) {
+                  return String.valueOf(i);
+                }
+              }
+            );
+            ```
+
+            becomes
+
+            ```java
+            List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5);
+            Iterable<Integer> odds = Iterables.filter(ints, i -> i % 2 == 1);
+            Iterable<String> strings = Iterables.transform(odds, i -> String.valueOf(i));
+            ```
+
+
+
+            ## But what about the Java 8 API?
+
+
+
+            ## `java.util.function`
+            ### Generic functional interfaces:
+
+            <ul>
+            <li class="fragment">`Consumer<T>` &mdash; `void accept(T t)`</li>
+            <li class="fragment">`Predicate<T>` &mdash; `boolean test(T t)`</li>
+            <li class="fragment">`Supplier<T>` &mdash; `T get()`</li>
+            <li class="fragment">`Function<T,R>` &mdash; `R apply(T t)`</li>
+            <li class="fragment">And all sorts of specialised derived interfaces</li>
+            </ul>
+
+
+
+            ## `java.util.stream`
+            ### Functional "collections"
+
+            <ul>
+            <li class="fragment">`Stream<T> Collection.stream()`</li>
+            <li class="fragment">`Stream.filter(Predicate<T> predicate)`</li>
+            <li class="fragment">`Stream.map(Function<T,R> mapper)`</li>
+            <li class="fragment">`Stream.flatMap(Function<T,Stream<R>> mapper)`</li>
+            <li class="fragment">`Stream.reduce(T identity, BinaryOperator<T> accumulator)`</li>
+            </ul>
+
+
+
+            ## So our earlier example:
+            ```java
+            List<Integer> ints = Arrays.asList(1, 2, 3, 4, 5);
+            Iterable<Integer> odds = Iterables.filter(ints, new Predicate<Integer>() {
+              public boolean apply(Integer i) {
+                return i % 2 == 1;
+              }
+            });
+            Iterable<String> strings = Iterables.transform(odds,
+              new Function<Integer, String>() {
+                public String apply(Integer i) {
+                  return String.valueOf(i);
+                }
+              }
+            );
+            ```
+
+            becomes
+
+            ```java
+            Stream<String> ints = Arrays.asList(1, 2, 3, 4, 5)
+                .stream()
+                .filter(i -> i % 2 == 1)
+                .map(i -> String.valueOf(i));
+            ```
+
+
+
+            ## Method references
+            ```java
+                .map(i -> String.valueOf(i))
+            ```
+
+            We don't really need to be creating an instance of `Function<Integer,String>` just to call that single method, surely?
+
+
+
+            ## Method references
+            Java 8 defined another new syntax - the method reference, `::` - this can be used on both classes and objects, so:
+
+            ```java
+                .map(String::valueOf)
+            ```
+
+            or
+
+            ```java
+            NumberFormat formatter = NumberFormat.getIntegerInstance();
+            // ... snip ...
+              .map(formatter::format);
+            ```
+          </script>
+				</section>
+
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            ## Closures
+
+            Lambda functions in Java 8 are lexically scoped (that is, they can access all variables
+            declared in the parent scope, so creating closures is trivial:
+
+            ```java
+            public Function<Integer,Integer> multiplyBy(int x) {
+              return (y) -> x * y;
+            }
+            ```
+
+            These can then be used by applying them, or using some of the other utility methods on
+            the functional interfaces:
+
+            ```java
+            Function<Integer,Integer> times2 = multiplyBy(2);
+            Function<Integer,String> answer = times2.andThen(i -> "Answer: "+i);
+            System.out.println(f.apply(4));
+            ```
+          </script>
+				</section>
+
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            ## Currying, or Partially-applied functions
+
+            Unfortunately, there's no support for currying in either the API or syntax for Java 8.
+            However, Java 8 gives us the tools to roll our own support.
+
+            <p class="fragment">
+            A curried function is simply one that has overloaded methods for a sublist of its parameters,
+            starting at the first one.
+            </p>
+
+            <!-- .element: class="fragment" -->
+            ```java
+            f = (a,b) -> a.doSomethingWith(b);  // ordinary lambda
+            curriedWithX = f.apply(x);          // partially applied
+            result = curriedWithX.apply(y);
+            ```
+
+
+
+            ## Scala - A functional language implemented using JVM classes
+
+            If you've dabbled with Scala, you'll probably have seen a workaround used there for implementing
+            functions as classes:
+
+            ```scala
+            trait Function2[-T1,-T2, +R] {
+              def apply(v1: T1, v2: T2): R
+            }
+            trait Function3[-T1,-T2,-T3,+R] {
+              def apply(v1: T1, v2: T2, v3: T3): R
+            }
+            // etc.
+            ```
+
+            Each of these traits has a `curried` function that uses some Scala magic to create the necessary
+            partial application functions. We can do something similar with Java.
+
+
+
+            ## Implementing currying
+
+            ```java
+            import java.util.function.Function;
+
+            @FunctionalInterface
+            public interface Function2<A,B,T> {
+              public T apply(A a,B b);
+              public default Function<B,T> apply(A a) {
+                return (b) -> apply(a,b);
+              }
+            }
+            ```
+
+
+
+            ```java
+            import java.util.function.Function;
+            @FunctionalInterface
+            public interface Function3<A,B,C,T> {
+              public T apply(A a,B b,C c);
+              public default Function2<B,C,T> apply(A a) {
+                return (b,c) -> apply(a,b,c);
+              }
+              public default Function<C,T> apply(A a,B b) {
+                return (c) -> apply(a,b,c);
+              }
+            }
+            ```
+
+
+
+            ```java
+            import java.util.function.Function;
+            @FunctionalInterface
+            public interface Function4<A,B,C,D,T> {
+              public T apply(A a,B b,C c,D d);
+              public default Function3<B,C,D,T> apply(A a) {
+                return (b,c,d) -> apply(a,b,c,d);
+              }
+              public default Function2<C,D,T> apply(A a,B b) {
+                return (c,d) -> apply(a,b,c,d);
+              }
+              public default Function<D,T> apply(A a,B b,C c) {
+                return (d) -> apply(a,b,c,d);
+              }
+            }
+            ```
+
+
+
+            ## ... etc ...
+          </script>
+				</section>
+
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            ## TL;DL
+
+            * Lexically scoped lambda expressions: `([args]) -> { [body] }`
+            * Method references: `MyClass::myMethod`
+            * Closures:
+            ```java
+            Object o = getSomeObject();
+            return (x) -> x.toString() + o.toString();
+            ```
+            * Currying - roll your own
+          </script>
+				</section>
+
+				<section>
+					<h1>THE END</h1>
+					<h3>Any questions?</h3>
+          <a href="http://twitter.com/misterpotes">@misterpotes</a>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+        width: 1280,
+        height: 800,
+
+				theme: 'night',
+				transition: 'linear',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
