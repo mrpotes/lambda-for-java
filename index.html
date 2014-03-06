@@ -47,15 +47,19 @@
 		<div class="reveal">
 
 			<div class="slides">
-				<section>
-          <h1>&#x03BB;4J</h1>
-					<h3>Lambdas for Java Developers</h3>
-					<p>
-						<small>
-              <a href="http://garbage-collection.potes.org.uk/">James Phillpotts</a> /
-              <a href="http://twitter.com/misterpotes">@misterpotes</a>
-            </small>
-					</p>
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            # &#x03BB;4J
+            ### Lambdas for Java Developers
+
+            [James Phillpotts](http://garbage-collection.potes.org.uk) / [@misterpotes](http://twitter.com/misterpotes)
+
+            Note:
+            * Hi I'm James
+            * Java Developer for last 10 years
+            * Fell in love with functional style a few years ago - Scala
+            * Even like JavaScript now...
+          </script>
 				</section>
 
 				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
@@ -63,6 +67,11 @@
             ## Finally!
 
             They're here. Java's caught up with the other big boys...
+
+            Note:
+            * Java 8 being released in 2 weeks
+            * It's been in preview for a few months now
+            * Main headlines: Lambdas, embedded JavaScript and Date and Time API
 
 
             ## Scala
@@ -81,6 +90,14 @@
             ```
 
 
+            ## JavaScript
+
+            ```
+            var foo = function(x) { return x * x; };
+            console.log(foo(7));
+            ```
+
+
             ## PHP
 
             ```
@@ -89,7 +106,7 @@
             ```
 
 
-            ## VisualBasic
+            ## Even bloody VisualBasic has got them
 
             ```
             Dim foo = Function(x) x * x
@@ -102,18 +119,11 @@
 					<script type="text/template">
             ## So what is a Lambda Function, anyway?
 
-            <ul>
-            <li class="fragment">An interface with a single method that needs implementing</li>
-            <li class="fragment">Declared using the syntax: `([args]) -> [body]`</li>
-
-            Note:
-            * Ultimately, it's an anonymous function - so in Java, a method that's detached from any concrete class
-
 
 
             ## Remember Anonymous Classes?
 
-            ```
+            ```java
             button.addActionListener(new ActionListener() {
               public void actionPerformed(ActionEvent e) {
                 System.out.println("Button clicked!");
@@ -128,9 +138,51 @@
 
             ## Introducing Anonymous Functions
 
-            ```
+            ```java
             button.addActionListener(e => System.out.println("Button clicked!"));
             ```
+
+
+
+            Or as a block:
+
+            ```java
+            button.addActionListener(e => {
+              System.out.println("Button clicked!")
+            });
+            ```
+
+
+
+            ## So how do I define them?
+
+            ```java
+            publc interface LambdaInterface {
+              Object myLambda(Object argument);
+            }
+            ```
+
+
+
+            ## @FunctionalInterface
+
+            ```java
+            @FunctionalInterface
+            publc interface LambdaInterface {
+              Object myLambda(Object argument);
+            }
+            ```
+
+
+
+            ## So a lambda function is
+            <ul>
+            <li class="fragment">An interface with a single method that needs implementing</li>
+            <li class="fragment">Declared using the syntax: `([args]) -> [body]`</li>
+            </ul>
+
+            Note:
+            * Ultimately, it's an anonymous function - so in Java, a method that's detached from any concrete class
 
 
 
@@ -391,6 +443,8 @@
 
 
             ## ... etc ...
+
+            [uk.org.potes.java8:java8-currying:0.0.1](http://github.com/mrpotes/java8-currying)
           </script>
 				</section>
 
@@ -406,6 +460,15 @@
             return (x) -> x.toString() + o.toString();
             ```
             * Currying - roll your own
+          </script>
+				</section>
+
+				<section data-markdown data-notes="^Note:" data-vertical="^\n\n" data-separator="^\n\n\n">
+					<script type="text/template">
+            ## More information
+
+            * [State if the Lambda by Brian Goetz](http://cr.openjdk.java.net/~briangoetz/lambda/lambda-state-final.html)
+            * Method references: `MyClass::myMethod`
           </script>
 				</section>
 
